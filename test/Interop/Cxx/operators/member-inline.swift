@@ -30,6 +30,19 @@ OperatorsTestSuite.test("LoadableIntWrapper.call (inline)") {
   expectEqual(57, resultTwoArgs)
 }
 
+OperatorsTestSuite.test("LoadableIntWrapper.successor() (inline)") {
+  var wrapper = LoadableIntWrapper(value: 42)
+
+  let result1 = wrapper.successor()
+  expectEqual(43, result1.value)
+  expectEqual(42, wrapper.value) // Calling `successor()` should not mutate `wrapper`.
+
+  let result2 = result1.successor()
+  expectEqual(44, result2.value)
+  expectEqual(43, result1.value)
+  expectEqual(42, wrapper.value)
+}
+
 OperatorsTestSuite.test("LoadableBoolWrapper.exclaim (inline)") {
   var wrapper = LoadableBoolWrapper(value: true)
 

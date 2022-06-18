@@ -2189,12 +2189,24 @@ namespace {
 
               Impl.markUnavailable(MD, "use .pointee property");
               MD->overwriteAccess(AccessLevel::Private);
+            } else if (cxxOperatorKind ==
+                           clang::OverloadedOperatorKind::OO_PlusPlus &&
+                       cxxMethod->param_empty()) {
+              // This is a pre-increment operator. We synthesize a non-mutating
+              // function called `successor() -> Self`.
+              FuncDecl *successorFunc = synthesizer.makeSuccessorFunc(MD);
+              result->addMember(successorFunc);
+
+              Impl.markUnavailable(MD, "use .successor()");
+              MD->overwriteAccess(AccessLevel::Private);
             }
             // Check if this method _is_ an overloaded operator but is not a
-            // call / subscript / dereference. Those 3 operators do not need
-            // static versions.
+            // call / subscript / dereference / increment. Those
+            // operators do not need static versions.
             else if (cxxOperatorKind !=
                          clang::OverloadedOperatorKind::OO_None &&
+                     cxxOperatorKind !=
+                         clang::OverloadedOperatorKind::OO_PlusPlus &&
                      cxxOperatorKind !=
                          clang::OverloadedOperatorKind::OO_Call &&
                      cxxOperatorKind !=

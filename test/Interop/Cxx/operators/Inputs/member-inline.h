@@ -19,6 +19,11 @@ struct LoadableIntWrapper {
   int operator()(int x, int y) {
     return value + x * y;
   }
+
+  LoadableIntWrapper &operator++() {
+    value++;
+    return *this;
+  }
 };
 
 struct LoadableBoolWrapper {
